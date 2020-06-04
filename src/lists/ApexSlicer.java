@@ -2,7 +2,8 @@ package lists;
 
 import bagel.Input;
 
-    public class ApexSlicer extends Slicer{
+/*
+public class ApexSlicer extends Slicer{
     private static final String IMAGE_FILE = "res/images/apexslicer.png";
     private static final double SPEED = 0.75;
     private static final double REWARD = 150;
@@ -18,3 +19,4 @@ import bagel.Input;
 
     }
 }
+*/

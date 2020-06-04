@@ -2,6 +2,7 @@ package lists;
 
 import bagel.Input;
 
+/*
 public class RegularSlicer extends Slicer {
 
     private static final String IMAGE_FILE = "res/images/slicer.png";
@@ -19,3 +20,4 @@ public class RegularSlicer extends Slicer {
 
     }
 }
+*/

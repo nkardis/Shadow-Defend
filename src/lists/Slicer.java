@@ -68,6 +68,11 @@ public class Slicer extends Sprite {
         super.update(input);
     }
 
-    public boolean isFinished() { return finished; }
+    public boolean isFinished() {
+        return finished;
+    }
 
-    public boolean isHit() { return hit; }
+    public boolean isHit() {
+        return hit;
+    }
+}

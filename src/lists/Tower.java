@@ -3,7 +3,7 @@ package lists;
 import bagel.Input;
 import bagel.util.Point;
 
-public class Tower extends Sprite {
+public abstract class Tower extends Sprite {
 
     private final Point location;
     private static final String IMAGE_FILE = "res/images/tank.png";

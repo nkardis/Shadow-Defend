@@ -1,9 +1,6 @@
 package lists;
 
-import bagel.AbstractGame;
-import bagel.Input;
-import bagel.Keys;
-import bagel.Window;
+import bagel.*;
 import bagel.map.TiledMap;
 import bagel.util.Point;
 import java.util.ArrayList;
@@ -16,7 +13,6 @@ public class ShadowDefend extends AbstractGame {
 
     private static final int HEIGHT = 768;
     private static final int WIDTH = 1024;
-    private static final String MAP_FILE = "res/levels/1.tmx";
     // Change to suit system specifications. This could be
     // dynamically determined but that is out of scope.
     public static final double FPS = 144;
@@ -27,27 +23,32 @@ public class ShadowDefend extends AbstractGame {
     // Timescale is made static because it is a universal property of the game and the specification
     // says everything in the game is affected by this
     private static int timescale = INTIAL_TIMESCALE;
+    private static int wave;
     private final TiledMap map;
     private final List<Point> polyline;
     private final List<Slicer> slicers;
     private double frameCount;
     private int spawnedSlicers;
-    private boolean waveStarted;
+    private static boolean waveStarted;
+    private boolean mapCompleted = false;
+    private final ArrayList<String> WAVES;
+    private final Panel panel = new Panel();
 
     /**
      * Creates a new instance of the ShadowDefend game
      */
     public ShadowDefend() {
         super(WIDTH, HEIGHT, "ShadowDefend");
-        this.map = new TiledMap(MAP_FILE);
+        this.map = new TiledMap(LoadLevel.loadMap(mapCompleted));
         this.polyline = map.getAllPolylines().get(0);
         this.slicers = new ArrayList<>();
         this.spawnedSlicers = 0;
-        this.waveStarted = false;
+        waveStarted = false;
         this.frameCount = Integer.MAX_VALUE;
         // Temporary fix for the weird slicer map glitch (might have to do with caching textures)
         // This fix is entirely optional
         new Slicer(polyline);
+        this.WAVES = LoadLevel.makeFormat();
     }
 
     /**
@@ -59,15 +60,17 @@ public class ShadowDefend extends AbstractGame {
         new ShadowDefend().run();
     }
 
-    public static int getTimescale() {
-        return timescale;
-    }
+    public static int getWave() {return wave;}
+
+    public static int getTimescale() {return timescale; }
+
+    public static boolean isWaveStarted() {return waveStarted; }
 
     /**
      * Increases the timescale
      */
     private void increaseTimescale() {
-        timescale++;
+        if(timescale < 5){timescale++;};
     }
 
     /**
@@ -77,7 +80,9 @@ public class ShadowDefend extends AbstractGame {
         if (timescale > INTIAL_TIMESCALE) {
             timescale--;
         }
+
     }
+
 
     /**
      * Update the state of the game, potentially reading from input
@@ -91,6 +96,8 @@ public class ShadowDefend extends AbstractGame {
 
         // Draw map from the top left of the window
         map.draw(0, 0, 0, 0, WIDTH, HEIGHT);
+        panel.update(input);
+
 
         // Handle key presses
         if (input.wasPressed(Keys.S)) {

@@ -2,7 +2,8 @@ package lists;
 
 import bagel.Input;
 
-    public class SuperSlicer extends Slicer {
+/*
+public class SuperSlicer extends Slicer {
     private static final String IMAGE_FILE = "res/images/superslicer.png";
     private static final double SPEED = 1.5;
     private static final double REWARD = 15;
@@ -17,4 +18,4 @@ import bagel.Input;
     public void update(Input input) {
 
     }
-}
+}*/

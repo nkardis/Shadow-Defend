@@ -2,6 +2,7 @@ package lists;
 
 import bagel.Input;
 
+/*
 public class Airplane extends Tower{
 
     private static final String IMAGE_FILE = "res/images/airplane.png";
@@ -21,3 +22,4 @@ public class Airplane extends Tower{
 
     }
 }
+*/

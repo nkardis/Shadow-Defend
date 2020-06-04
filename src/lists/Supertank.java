@@ -2,7 +2,7 @@ package lists;
 
 import bagel.Input;
 
-public class Supertank extends Tower {
+/*public class Supertank extends Tower {
 
     private static final String IMAGE_FILE = "res/images/supertank.png";
     private static final String PROJ_FILE = "res/images/supertank_projectile.png";
@@ -19,4 +19,4 @@ public class Supertank extends Tower {
     public void update(Input input){
 
     }
-}
+}*/
