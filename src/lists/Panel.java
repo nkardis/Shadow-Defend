@@ -1,7 +1,6 @@
 package lists;
 
 import bagel.*;
-import bagel.map.TiledMap;
 import bagel.util.Colour;
 
 public class Panel {
@@ -54,39 +53,39 @@ public class Panel {
      *  Finds y-coord for status panel location
      * @return y coordinate for status panel
      */
-    public double getStatusPanelLocation() {
+    private double getStatusPanelLocation() {
         return Window.getHeight() - botPanel.getHeight();
     }
 
-    public double getItemVerticalOffset() {
+    private double getItemVerticalOffset() {
         return topPanel.getHeight()/2 - PIXEL_CENTRE;
     }
 
-    public double getPriceVerticalOffset() {
+    private double getPriceVerticalOffset() {
         return topPanel.getHeight() - PIXEL_CENTRE;
     }
 
-    public double getMoneyOffset() {
+    private double getMoneyOffset() {
         return topPanel.getWidth() - RIGHT_SPACING;
     }
 
-    public double statusPanelCentering() {
+    private double statusPanelCentering() {
         return getStatusPanelLocation() + botPanel.getHeight() - 7;
     }
 
-    public Colour towerPurchaseable(double towerPrice) {
+    private Colour towerPurchaseable(double towerPrice) {
         if(money >= towerPrice) {
             return Colour.GREEN;
         } else { return Colour.RED;}
     }
 
-    public Colour timeScaleColour(double timescale) {
+    private Colour timeScaleColour(double timescale) {
         if (timescale > 1) {
             return Colour.GREEN;
         } else { return Colour.WHITE; }
     }
     /* Implement Placing/Winner when drag/drop is done */
-    public String waveStatus() {
+    private String waveStatus() {
         if (ShadowDefend.isWaveStarted()) {
             return INPROGRESS;
         } else {
@@ -94,11 +93,11 @@ public class Panel {
         }
     }
 
-    public int getLives() {
+    private int getLives() {
             return lives;
         }
 
-    public void drawBuyPanel(){
+    private void drawBuyPanel(){
         /* Top panel draw*/
         topPanel.drawFromTopLeft(0,0);
         tank.draw(LEFT_SPACING, getItemVerticalOffset());
@@ -114,7 +113,7 @@ public class Panel {
         bindFont.drawString(BINDS, topPanel.getWidth()/2 - bindFont.getWidth(BINDS)/2, getItemVerticalOffset());
     }
 
-    public void drawStatusPanel(){
+    private void drawStatusPanel(){
         /* Status panel draw */
         botPanel.drawFromTopLeft(0, getStatusPanelLocation());
         statusPanelFont.drawString(String.valueOf("Wave: " + ShadowDefend.getWave()),5,

@@ -20,10 +20,12 @@ public class ShadowDefend extends AbstractGame {
     private static final int SPAWN_DELAY = 5;
     private static final int INTIAL_TIMESCALE = 1;
     private static final int MAX_SLICERS = 5;
+    private static int WAVE_POSITION = 0;
     // Timescale is made static because it is a universal property of the game and the specification
     // says everything in the game is affected by this
     private static int timescale = INTIAL_TIMESCALE;
-    private static int wave;
+    private String waveProperties;
+    private static int wave = 1;
     private final TiledMap map;
     private final List<Point> polyline;
     private final List<Slicer> slicers;
@@ -45,6 +47,7 @@ public class ShadowDefend extends AbstractGame {
         this.spawnedSlicers = 0;
         waveStarted = false;
         this.frameCount = Integer.MAX_VALUE;
+        this.waveProperties = "";
         // Temporary fix for the weird slicer map glitch (might have to do with caching textures)
         // This fix is entirely optional
         new Slicer(polyline);
@@ -83,6 +86,15 @@ public class ShadowDefend extends AbstractGame {
 
     }
 
+    /**
+     * Parses the next wave to be run by the game
+     * @param wave wave number of round
+     * @return returns wave properties <wave number>,spawn,<number to spawn>,<enemy type>,<spawn delay in milliseconds>
+     */
+    private String nextWave(int wave) {
+        waveProperties = WAVES.get(wave - 1);
+        return waveProperties;
+    }
 
     /**
      * Update the state of the game, potentially reading from input
@@ -93,6 +105,7 @@ public class ShadowDefend extends AbstractGame {
     protected void update(Input input) {
         // Increase the frame counter by the current timescale
         frameCount += getTimescale();
+        System.out.println(nextWave(getWave()));
 
         // Draw map from the top left of the window
         map.draw(0, 0, 0, 0, WIDTH, HEIGHT);

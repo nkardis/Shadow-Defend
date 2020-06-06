@@ -25,6 +25,10 @@ public class LoadLevel {
 
     }
 
+    /**
+     *
+     * @return ArrayList of waves
+     */
      public static ArrayList<String> makeFormat(){
          try (Scanner scanner = new Scanner(new FileReader(WAVES))) {
              while (scanner.hasNextLine()) {
