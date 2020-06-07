@@ -3,6 +3,7 @@ package lists;
 import bagel.*;
 import bagel.map.TiledMap;
 import bagel.util.Point;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,15 +18,15 @@ public class ShadowDefend extends AbstractGame {
     // dynamically determined but that is out of scope.
     public static final double FPS = 144;
     // The spawn delay (in seconds) to spawn slicers
-    private static final int SPAWN_DELAY = 5;
     private static final int INTIAL_TIMESCALE = 1;
-    private static final int MAX_SLICERS = 5;
+    private static int waveNumber;
+    private int maxSlicers;
+    private double spawnDelay;
     private static int WAVE_POSITION = 0;
     // Timescale is made static because it is a universal property of the game and the specification
     // says everything in the game is affected by this
     private static int timescale = INTIAL_TIMESCALE;
-    private String waveProperties;
-    private static int wave = 1;
+    private static int wavetxtIter = 1;
     private final TiledMap map;
     private final List<Point> polyline;
     private final List<Slicer> slicers;
@@ -47,7 +48,6 @@ public class ShadowDefend extends AbstractGame {
         this.spawnedSlicers = 0;
         waveStarted = false;
         this.frameCount = Integer.MAX_VALUE;
-        this.waveProperties = "";
         // Temporary fix for the weird slicer map glitch (might have to do with caching textures)
         // This fix is entirely optional
         new Slicer(polyline);
@@ -63,37 +63,49 @@ public class ShadowDefend extends AbstractGame {
         new ShadowDefend().run();
     }
 
-    public static int getWave() {return wave;}
+    public static int getWave(String[] waveData) {return Integer.parseInt(waveData[0]);}
+
+    private double getSpawnDelay(String[] waveData) {
+        return Integer.parseInt(waveData[4])/1000;
+    }
 
     public static int getTimescale() {return timescale; }
 
     public static boolean isWaveStarted() {return waveStarted; }
 
+    public static int getWaveNumber() {return waveNumber;}
+
+    private static int getWaveIter(){
+        return wavetxtIter;
+    }
+
     /**
      * Increases the timescale
      */
     private void increaseTimescale() {
-        if(timescale < 5){timescale++;};
-    }
+        if(timescale < 5) {timescale++;}; }
 
     /**
      * Decreases the timescale but doesn't go below the base timescale
      */
     private void decreaseTimescale() {
-        if (timescale > INTIAL_TIMESCALE) {
-            timescale--;
-        }
-
-    }
+        if (timescale > INTIAL_TIMESCALE) { timescale--; } }
 
     /**
      * Parses the next wave to be run by the game
      * @param wave wave number of round
      * @return returns wave properties <wave number>,spawn,<number to spawn>,<enemy type>,<spawn delay in milliseconds>
      */
-    private String nextWave(int wave) {
-        waveProperties = WAVES.get(wave - 1);
-        return waveProperties;
+    private String[] nextWave(int wave) {
+        return WAVES.get(wave - 1).split(",");
+    }
+
+    private boolean ifSpawnWave(String[] waveData) {
+        return waveData[1].equals("spawn");
+    }
+
+    private void increaseWaveIter(){
+        wavetxtIter++;
     }
 
     /**
@@ -105,8 +117,12 @@ public class ShadowDefend extends AbstractGame {
     protected void update(Input input) {
         // Increase the frame counter by the current timescale
         frameCount += getTimescale();
-        System.out.println(nextWave(getWave()));
-
+        String[] waveData = nextWave(getWaveIter());
+        if (ifSpawnWave(waveData)) {
+            maxSlicers = Integer.parseInt(waveData[2]);
+        }
+        waveNumber = getWave(waveData);
+        spawnDelay = getSpawnDelay(waveData);
         // Draw map from the top left of the window
         map.draw(0, 0, 0, 0, WIDTH, HEIGHT);
         panel.update(input);
@@ -126,7 +142,8 @@ public class ShadowDefend extends AbstractGame {
         }
 
         // Check if it is time to spawn a new slicer (and we have some left to spawn)
-        if (waveStarted && frameCount / FPS >= SPAWN_DELAY && spawnedSlicers != MAX_SLICERS) {
+        // To Do: Add logic to do different slicer spawns
+        if (waveStarted && frameCount / FPS >= spawnDelay && spawnedSlicers != maxSlicers) {
             slicers.add(new Slicer(polyline));
             spawnedSlicers += 1;
             // Reset frame counter
@@ -134,7 +151,7 @@ public class ShadowDefend extends AbstractGame {
         }
 
         // Close game if all slicers have finished traversing the polyline
-        if (spawnedSlicers == MAX_SLICERS && slicers.isEmpty()) {
+        if (spawnedSlicers == maxSlicers && slicers.isEmpty()) {
             Window.close();
         }
 
@@ -144,7 +161,9 @@ public class ShadowDefend extends AbstractGame {
             s.update(input);
             if (s.isFinished()) {
                 slicers.remove(i);
+                panel.decreaseLives();
             }
         }
     }
+
 }

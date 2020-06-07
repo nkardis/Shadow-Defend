@@ -93,9 +93,11 @@ public class Panel {
         }
     }
 
-    private int getLives() {
+    public int getLives() {
             return lives;
         }
+
+    public void decreaseLives() {lives--;}
 
     private void drawBuyPanel(){
         /* Top panel draw*/
@@ -116,7 +118,7 @@ public class Panel {
     private void drawStatusPanel(){
         /* Status panel draw */
         botPanel.drawFromTopLeft(0, getStatusPanelLocation());
-        statusPanelFont.drawString(String.valueOf("Wave: " + ShadowDefend.getWave()),5,
+        statusPanelFont.drawString(String.valueOf("Wave: " + ShadowDefend.getWaveNumber()),5,
                 statusPanelCentering());
         statusPanelFont.drawString(String.valueOf("Time Scale: " + ShadowDefend.getTimescale()), 5 + 2*GAP_SPACING,
                 statusPanelCentering(), new DrawOptions().setBlendColour(timeScaleColour(ShadowDefend.getTimescale())));
