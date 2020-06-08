@@ -1,8 +1,10 @@
 1,spawn,20,slicer,1000
-2,spawn,5,slicer,1000
-2,delay,2500
-2,spawn,20,slicer,750
-3,spawn,5,superslicer,1000
+1,delay,2000
+1,spawn,5,slicer,2000
+2,spawn,6,slicer,1000
+2,delay,5000
+2,spawn,20,slicer,500
+3,spawn,5,slicer,1000
 4,spawn,5,slicer,500
 4,delay,1000
 4,spawn,5,superslicer,500

@@ -49,10 +49,6 @@ public class Panel {
 
     }
 
-    /**
-     *  Finds y-coord for status panel location
-     * @return y coordinate for status panel
-     */
     private double getStatusPanelLocation() {
         return Window.getHeight() - botPanel.getHeight();
     }
@@ -102,28 +98,37 @@ public class Panel {
     private void drawBuyPanel(){
         /* Top panel draw*/
         topPanel.drawFromTopLeft(0,0);
+        // Tank draw and pricing underneath
         tank.draw(LEFT_SPACING, getItemVerticalOffset());
         priceFont.drawString(String.valueOf("$" + TANKPRICE),LEFT_SPACING/2, getPriceVerticalOffset(),
                 new DrawOptions().setBlendColour(towerPurchaseable(TANKPRICE)));
+        // Super tank draw and pricing underneath
         superTank.draw(LEFT_SPACING + GAP_SPACING, getItemVerticalOffset());
         priceFont.drawString(String.valueOf("$" + SUPERTANKPRICE), LEFT_SPACING/2 + GAP_SPACING, getPriceVerticalOffset(),
                 new DrawOptions().setBlendColour(towerPurchaseable(SUPERTANKPRICE)));
+        // Air support draw and pricing underneath
         airSupport.draw(LEFT_SPACING + 2*GAP_SPACING, getItemVerticalOffset());
         priceFont.drawString(String.valueOf("$" + AIRSUPPORTPRICE), LEFT_SPACING/2 + 2*GAP_SPACING, getPriceVerticalOffset(),
                 new DrawOptions().setBlendColour(towerPurchaseable(AIRSUPPORTPRICE)));
+        // Money draw
         moneyFont.drawString(String.valueOf(money), getMoneyOffset(), TOP_SPACING);
+        // Binding draw
         bindFont.drawString(BINDS, topPanel.getWidth()/2 - bindFont.getWidth(BINDS)/2, getItemVerticalOffset());
     }
 
     private void drawStatusPanel(){
         /* Status panel draw */
         botPanel.drawFromTopLeft(0, getStatusPanelLocation());
+        // Wave counter draw
         statusPanelFont.drawString(String.valueOf("Wave: " + ShadowDefend.getWaveNumber()),5,
                 statusPanelCentering());
+        // Timescale draw
         statusPanelFont.drawString(String.valueOf("Time Scale: " + ShadowDefend.getTimescale()), 5 + 2*GAP_SPACING,
                 statusPanelCentering(), new DrawOptions().setBlendColour(timeScaleColour(ShadowDefend.getTimescale())));
+        // Wave Status draw
         statusPanelFont.drawString(waveStatus(),
                 botPanel.getWidth()/2 - statusPanelFont.getWidth(waveStatus())/2,statusPanelCentering());
+        // Life meter draw
         statusPanelFont.drawString("Lives: " + getLives(),
                 botPanel.getWidth() - (statusPanelFont.getWidth("Lives: " + getLives()) + 5), statusPanelCentering());
     }

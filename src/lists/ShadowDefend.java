@@ -17,11 +17,12 @@ public class ShadowDefend extends AbstractGame {
     // Change to suit system specifications. This could be
     // dynamically determined but that is out of scope.
     public static final double FPS = 144;
-    // The spawn delay (in seconds) to spawn slicers
     private static final int INTIAL_TIMESCALE = 1;
     private static int waveNumber;
-    private int maxSlicers;
+    private int maxSlicers = -1;
     private double spawnDelay;
+    private boolean delayed = false;
+    private String slicerType;
     private static int WAVE_POSITION = 0;
     // Timescale is made static because it is a universal property of the game and the specification
     // says everything in the game is affected by this
@@ -65,9 +66,13 @@ public class ShadowDefend extends AbstractGame {
 
     public static int getWave(String[] waveData) {return Integer.parseInt(waveData[0]);}
 
-    private double getSpawnDelay(String[] waveData) {
-        return Integer.parseInt(waveData[4])/1000;
-    }
+    private double getSpawnDelay(String determinate, String[] waveData) {
+        if (determinate.equals("spawn")) {
+            return Integer.parseInt(waveData[4])/1000;} else {
+            return Integer.parseInt(waveData[2])/1000;}
+        }
+
+    private static String getSlicerType(String[] waveData) {return waveData[3];}
 
     public static int getTimescale() {return timescale; }
 
@@ -119,10 +124,20 @@ public class ShadowDefend extends AbstractGame {
         frameCount += getTimescale();
         String[] waveData = nextWave(getWaveIter());
         if (ifSpawnWave(waveData)) {
+            waveNumber = getWave(waveData);
             maxSlicers = Integer.parseInt(waveData[2]);
-        }
-        waveNumber = getWave(waveData);
-        spawnDelay = getSpawnDelay(waveData);
+            slicerType = getSlicerType(waveData);
+            spawnDelay = getSpawnDelay("spawn", waveData);
+        } else {
+            waveNumber = getWave(waveData);
+            spawnDelay = getSpawnDelay("delay", waveData);
+    }
+        //System.out.println("Wave: " + waveNumber);
+        //System.out.println("Spawn delay: " + spawnDelay);
+//        System.out.println("Max slicers: " + maxSlicers);
+//        System.out.println("Spawn Delay: " + spawnDelay);
+
+
         // Draw map from the top left of the window
         map.draw(0, 0, 0, 0, WIDTH, HEIGHT);
         panel.update(input);
@@ -143,19 +158,35 @@ public class ShadowDefend extends AbstractGame {
 
         // Check if it is time to spawn a new slicer (and we have some left to spawn)
         // To Do: Add logic to do different slicer spawns
-        if (waveStarted && frameCount / FPS >= spawnDelay && spawnedSlicers != maxSlicers) {
+        if (waveStarted && frameCount / FPS >= spawnDelay && spawnedSlicers != maxSlicers && ifSpawnWave(waveData) && delayed) {
             slicers.add(new Slicer(polyline));
             spawnedSlicers += 1;
-            // Reset frame counter
+            frameCount = 0;
+        } else if (waveStarted && !delayed){
+            delayed = true;
             frameCount = 0;
         }
-
-        // Close game if all slicers have finished traversing the polyline
-        if (spawnedSlicers == maxSlicers && slicers.isEmpty()) {
-            Window.close();
+        /*Checks to see if delayed spawn has been completed and sets delay timer off so slicers
+        can start spawning*/
+        if (waveStarted && delayed && frameCount / FPS >= spawnDelay) {
+            delayed = false;
+            frameCount = 0;
+            increaseWaveIter();
         }
 
-        // Update all sprites, and remove them if they've finished
+
+        // Finish wave if all slicers have finished traversing the polyline or TO DO: been killed
+        if (spawnedSlicers == maxSlicers) {
+            increaseWaveIter();
+            waveData = nextWave(getWaveIter());
+            System.out.println("ERROR TEST: " + waveData[0]);
+            if (Integer.parseInt(waveData[0]) != waveNumber){
+                waveStarted = false;}
+            spawnedSlicers = 0;
+
+        }
+
+        // Update all sprites, and remove them if they've finished or TO DO: been killed
         for (int i = slicers.size() - 1; i >= 0; i--) {
             Slicer s = slicers.get(i);
             s.update(input);
@@ -164,6 +195,10 @@ public class ShadowDefend extends AbstractGame {
                 panel.decreaseLives();
             }
         }
+
+        /*if (panel.getLives() <= 0) {
+            Window.close();
+        }*/
     }
 
 }
