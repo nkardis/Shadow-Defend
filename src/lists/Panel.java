@@ -93,7 +93,23 @@ public class Panel {
             return lives;
         }
 
-    public void decreaseLives() {lives--;}
+    /**
+     * Subtracts amount of lives when a slicer finishes on polyline
+      * @param slicerType takes the class of the slicer finished removes amount of lives associated
+     */
+    public void decreaseLives(Class<? extends Sprite> slicerType) {
+        if (slicerType.equals(Slicer.class))
+            {lives--;}
+        else if (slicerType.equals(SuperSlicer.class)){
+            for (int i = 0; i < SuperSlicer.getLifeLoss(); i++){lives--;}
+        }
+        else if (slicerType.equals(MegaSlicer.class)){
+            for (int i = 0; i < MegaSlicer.getLifeLoss(); i++){lives--;}
+        }
+        else if (slicerType.equals(ApexSlicer.class)){
+            for (int i = 0; i < ApexSlicer.getLifeLoss(); i++){lives--;}
+        }
+    }
 
     private void drawBuyPanel(){
         /* Top panel draw*/

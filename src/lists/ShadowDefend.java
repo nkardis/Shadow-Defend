@@ -20,7 +20,7 @@ public class ShadowDefend extends AbstractGame {
     private static final String APEXSLICER = "apexslicer";
     // Change to suit system specifications. This could be
     // dynamically determined but that is out of scope.
-    public static final double FPS = 60;
+    public static final double FPS = 144;
     private static final int INTIAL_TIMESCALE = 1;
     private static int waveNumber;
     private int maxSlicers = -1;
@@ -144,7 +144,6 @@ public class ShadowDefend extends AbstractGame {
 
         // Draw map from the top left of the window
         map.draw(0, 0, 0, 0, WIDTH, HEIGHT);
-        panel.update(input);
 
 
         // Handle key presses
@@ -161,8 +160,9 @@ public class ShadowDefend extends AbstractGame {
         }
 
         // Check if it is time to spawn a new slicer (and we have some left to spawn)
-        // To Do: Add logic to do different slicer spawns
-        if (waveStarted && frameCount / FPS >= spawnDelay && spawnedSlicers != maxSlicers && ifSpawnWave(waveData) && delayed) {
+        if (waveStarted && frameCount / FPS >= spawnDelay && spawnedSlicers != maxSlicers
+                && ifSpawnWave(waveData) && delayed) {
+            // Which slicer type needs to be spawned and adds it to the ArrayList
             if (slicerType.equals(SLICER)) {
                 slicers.add(new Slicer(polyline)); }
             else if (slicerType.equals(MEGASLICER)){
@@ -199,15 +199,17 @@ public class ShadowDefend extends AbstractGame {
 
         }
 
-        // Update all sprites, and remove them if they've finished or TO DO: been killed
+        // Update all sprites, and remove them if they've finished or TO DO: been killed/Split
         for (int i = slicers.size() - 1; i >= 0; i--) {
                 Sprite s = slicers.get(i);
             s.update(input);
             if (s.isFinished()) {
+                panel.decreaseLives(slicers.get(i).getClass());
                 slicers.remove(i);
-                panel.decreaseLives();
+
             }
         }
+        panel.update(input);
 
         /*if (panel.getLives() <= 0) {
             Window.close();

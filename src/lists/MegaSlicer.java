@@ -26,6 +26,18 @@ public class MegaSlicer extends Sprite {
         this.finished = false;
     }
 
+    public static double getREWARD() {
+        return REWARD;
+    }
+
+    public static double getHEALTH() {
+        return HEALTH;
+    }
+
+    public static int getLifeLoss() {
+        return LIFE_LOSS;
+    }
+
     @Override
     public void update(Input input) {
         if (finished) {
