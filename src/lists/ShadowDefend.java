@@ -14,9 +14,13 @@ public class ShadowDefend extends AbstractGame {
 
     private static final int HEIGHT = 768;
     private static final int WIDTH = 1024;
+    private static final String SLICER = "slicer";
+    private static final String SUPERSLICER = "superslicer";
+    private static final String MEGASLICER = "megaslicer";
+    private static final String APEXSLICER = "apexslicer";
     // Change to suit system specifications. This could be
     // dynamically determined but that is out of scope.
-    public static final double FPS = 144;
+    public static final double FPS = 60;
     private static final int INTIAL_TIMESCALE = 1;
     private static int waveNumber;
     private int maxSlicers = -1;
@@ -30,7 +34,7 @@ public class ShadowDefend extends AbstractGame {
     private static int wavetxtIter = 1;
     private final TiledMap map;
     private final List<Point> polyline;
-    private final List<Slicer> slicers;
+    private final List<Sprite> slicers;
     private double frameCount;
     private int spawnedSlicers;
     private static boolean waveStarted;
@@ -134,8 +138,8 @@ public class ShadowDefend extends AbstractGame {
     }
         //System.out.println("Wave: " + waveNumber);
         //System.out.println("Spawn delay: " + spawnDelay);
-//        System.out.println("Max slicers: " + maxSlicers);
-//        System.out.println("Spawn Delay: " + spawnDelay);
+        //        System.out.println("Max slicers: " + maxSlicers);
+        //        System.out.println("Spawn Delay: " + spawnDelay);
 
 
         // Draw map from the top left of the window
@@ -159,10 +163,19 @@ public class ShadowDefend extends AbstractGame {
         // Check if it is time to spawn a new slicer (and we have some left to spawn)
         // To Do: Add logic to do different slicer spawns
         if (waveStarted && frameCount / FPS >= spawnDelay && spawnedSlicers != maxSlicers && ifSpawnWave(waveData) && delayed) {
-            slicers.add(new Slicer(polyline));
+            if (slicerType.equals(SLICER)) {
+                slicers.add(new Slicer(polyline)); }
+            else if (slicerType.equals(MEGASLICER)){
+                slicers.add(new MegaSlicer(polyline)); }
+            else if (slicerType.equals(SUPERSLICER)) {
+                slicers.add(new SuperSlicer(polyline)); }
+            else if (slicerType.equals(APEXSLICER)) {
+                slicers.add(new ApexSlicer(polyline));
+            }
             spawnedSlicers += 1;
             frameCount = 0;
-        } else if (waveStarted && !delayed){
+        }
+            else if (waveStarted && !delayed){
             delayed = true;
             frameCount = 0;
         }
@@ -188,7 +201,7 @@ public class ShadowDefend extends AbstractGame {
 
         // Update all sprites, and remove them if they've finished or TO DO: been killed
         for (int i = slicers.size() - 1; i >= 0; i--) {
-            Slicer s = slicers.get(i);
+                Sprite s = slicers.get(i);
             s.update(input);
             if (s.isFinished()) {
                 slicers.remove(i);

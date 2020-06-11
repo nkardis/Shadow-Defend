@@ -57,4 +57,6 @@ public abstract class Sprite {
     public void update(Input input) {
         image.draw(getCenter().x, getCenter().y, new DrawOptions().setRotation(angle));
     }
+
+    public abstract boolean isFinished();
 }
