@@ -2,6 +2,11 @@ package lists;
 
 import bagel.*;
 import bagel.util.Colour;
+import bagel.util.Point;
+import bagel.util.Rectangle;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Panel {
 
@@ -36,6 +41,16 @@ public class Panel {
     private int lives = 25;
     private double money = 500;
 
+    private final Point tankPos;
+    private final Point superTankPos;
+    private final Point airSupportPos;
+
+    private boolean placingTank = false;
+    private boolean placingSuperTank = false;
+    private boolean placingAirSupport = false;
+
+    private final List<Tower> towers;
+
     public Panel() {
         this.topPanel = new Image(BUY_PANEL);
         this.botPanel = new Image(STATUS_PANEL);
@@ -46,7 +61,11 @@ public class Panel {
         this.priceFont = new Font(FONT, 24);
         this.bindFont = new Font(FONT, 14);
         this.statusPanelFont = new Font(FONT, 18);
+        this.tankPos = new Point(LEFT_SPACING, getItemVerticalOffset());
+        this.superTankPos = new Point(LEFT_SPACING + GAP_SPACING, getItemVerticalOffset());
+        this.airSupportPos = new Point(LEFT_SPACING + 2*GAP_SPACING, getItemVerticalOffset());
 
+        this.towers = new ArrayList<>();
     }
 
     private double getStatusPanelLocation() {
@@ -69,6 +88,8 @@ public class Panel {
         return getStatusPanelLocation() + botPanel.getHeight() - 7;
     }
 
+    private boolean isPlacing() {return placingTank || placingSuperTank || placingAirSupport;}
+
     private Colour towerPurchaseable(double towerPrice) {
         if(money >= towerPrice) {
             return Colour.GREEN;
@@ -84,6 +105,8 @@ public class Panel {
     private String waveStatus() {
         if (ShadowDefend.isWaveStarted()) {
             return INPROGRESS;
+        } else if (isPlacing()) {
+            return PLACE;
         } else {
             return WAITING;
         }
@@ -114,16 +137,16 @@ public class Panel {
     private void drawBuyPanel(){
         /* Top panel draw*/
         topPanel.drawFromTopLeft(0,0);
-        // Tank draw and pricing underneath
-        tank.draw(LEFT_SPACING, getItemVerticalOffset());
+        // Tank draw and pricing
+        tank.draw(tankPos.x, tankPos.y);
         priceFont.drawString(String.valueOf("$" + TANKPRICE),LEFT_SPACING/2, getPriceVerticalOffset(),
                 new DrawOptions().setBlendColour(towerPurchaseable(TANKPRICE)));
         // Super tank draw and pricing underneath
-        superTank.draw(LEFT_SPACING + GAP_SPACING, getItemVerticalOffset());
+        superTank.draw(superTankPos.x, superTankPos.y);
         priceFont.drawString(String.valueOf("$" + SUPERTANKPRICE), LEFT_SPACING/2 + GAP_SPACING, getPriceVerticalOffset(),
                 new DrawOptions().setBlendColour(towerPurchaseable(SUPERTANKPRICE)));
         // Air support draw and pricing underneath
-        airSupport.draw(LEFT_SPACING + 2*GAP_SPACING, getItemVerticalOffset());
+        airSupport.draw(airSupportPos.x, airSupportPos.y);
         priceFont.drawString(String.valueOf("$" + AIRSUPPORTPRICE), LEFT_SPACING/2 + 2*GAP_SPACING, getPriceVerticalOffset(),
                 new DrawOptions().setBlendColour(towerPurchaseable(AIRSUPPORTPRICE)));
         // Money draw
@@ -152,5 +175,39 @@ public class Panel {
     public void update(Input input) {
     drawBuyPanel();
     drawStatusPanel();
+    // Creates Point that contains position of mouse updated each cycle
+    Point mousePos = input.getMousePosition();
+
+    // When hovered and clicked, an Image of the tower is drawn where mouse position is
+    if (tank.getBoundingBoxAt(tankPos).intersects(mousePos) && input.isDown(MouseButtons.LEFT)
+            && !placingSuperTank && !placingAirSupport){
+        placingTank = true;
+    } else if (superTank.getBoundingBoxAt(superTankPos).intersects(mousePos) && input.isDown(MouseButtons.LEFT )
+            && !placingTank && !placingAirSupport){
+        placingSuperTank = true;
     }
-}
+    // Player cant hover multiple towers are picked up for placement at the same time
+    // and doesn't allow for tower to be placed on the Panels and are placed in playable area
+    if (placingTank && !placingSuperTank && !placingAirSupport){
+        tank.draw(mousePos.x, mousePos.y);
+        if (input.wasReleased(MouseButtons.LEFT) && !topPanel.getBoundingBox().intersects(mousePos)
+                && !botPanel.getBoundingBox().intersects(mousePos)) {
+            towers.add(new Tank(mousePos, TANK));
+            placingTank = false;
+        }
+    } else if (placingSuperTank && !placingTank && !placingAirSupport){
+        superTank.draw(mousePos.x, mousePos.y);
+        if (input.wasReleased(MouseButtons.LEFT) && !topPanel.getBoundingBox().intersects(mousePos)
+                && !botPanel.getBoundingBox().intersects(mousePos)) {
+            towers.add(new SuperTank(mousePos, SUPERTANK));
+            placingSuperTank = false;
+        }
+        }
+    // Updates towers
+        for (int i = towers.size() - 1; i >= 0; i--) {
+            Sprite t = towers.get(i);
+            t.update(input);
+            }
+        }
+
+    }

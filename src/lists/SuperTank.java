@@ -1,4 +1,3 @@
-
 package lists;
 
 import bagel.DrawOptions;
@@ -6,19 +5,19 @@ import bagel.Image;
 import bagel.Input;
 import bagel.util.Point;
 
-public class Tank extends Tower {
+public class SuperTank extends Tower {
 
-    private static final String IMAGE_FILE = "res/images/tank.png";
-    private static final String PROJ_FILE = "res/images/tank_projectile.png";
-    private static final double RADIUS = 100;
-    private static final double DAMAGE = 1;
-    private static final double COOLDOWN = 100;
-    private static final double COST = 250;
+    private static final String IMAGE_FILE = "res/images/supertank.png";
+    private static final String PROJ_FILE = "res/images/supertank_projectile.png";
+    private static final double RADIUS = 150;
+    private static final double DAMAGE = 3;
+    private static final double COOLDOWN = 500;
+    private static final double COST = 600;
     private final Point location;
     private boolean shooting;
     private final Image image;
 
-    public Tank(Point location, String filename){
+    public SuperTank(Point location, String filename) {
         super(location, IMAGE_FILE);
         this.image = new Image(IMAGE_FILE);
         this.location = location;
@@ -34,4 +33,3 @@ public class Tank extends Tower {
         return false;
     }
 }
-

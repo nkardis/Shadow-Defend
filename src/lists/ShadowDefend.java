@@ -41,7 +41,7 @@ public class ShadowDefend extends AbstractGame {
     private boolean mapCompleted = false;
     private final ArrayList<String> WAVES;
     private final Panel panel = new Panel();
-
+    
     /**
      * Creates a new instance of the ShadowDefend game
      */
@@ -192,7 +192,6 @@ public class ShadowDefend extends AbstractGame {
         if (spawnedSlicers == maxSlicers) {
             increaseWaveIter();
             waveData = nextWave(getWaveIter());
-            System.out.println("ERROR TEST: " + waveData[0]);
             if (Integer.parseInt(waveData[0]) != waveNumber){
                 waveStarted = false;}
             spawnedSlicers = 0;
@@ -211,9 +210,12 @@ public class ShadowDefend extends AbstractGame {
         }
         panel.update(input);
 
+
         /*if (panel.getLives() <= 0) {
             Window.close();
         }*/
+
+
     }
 
 }

@@ -1,9 +1,10 @@
+/*
 package lists;
 
 import bagel.Input;
 
-/*
-public class Airplane extends Tower{
+
+public class Airplane extends Sprite{
 
     private static final String IMAGE_FILE = "res/images/airplane.png";
     private static final String PROJ_FILE = "res/images/explosive.png";
@@ -23,3 +24,4 @@ public class Airplane extends Tower{
     }
 }
 */
+
