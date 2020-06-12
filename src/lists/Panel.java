@@ -173,41 +173,55 @@ public class Panel {
     }
 
     public void update(Input input) {
-    drawBuyPanel();
-    drawStatusPanel();
-    // Creates Point that contains position of mouse updated each cycle
-    Point mousePos = input.getMousePosition();
+        drawBuyPanel();
+        drawStatusPanel();
+        // Creates Point that contains position of mouse updated each cycle
+        Point mousePos = input.getMousePosition();
 
-    // When hovered and clicked, an Image of the tower is drawn where mouse position is
-    if (tank.getBoundingBoxAt(tankPos).intersects(mousePos) && input.isDown(MouseButtons.LEFT)
-            && !placingSuperTank && !placingAirSupport){
-        placingTank = true;
-    } else if (superTank.getBoundingBoxAt(superTankPos).intersects(mousePos) && input.isDown(MouseButtons.LEFT )
-            && !placingTank && !placingAirSupport){
-        placingSuperTank = true;
-    }
-    // Player cant hover multiple towers are picked up for placement at the same time
-    // and doesn't allow for tower to be placed on the Panels and are placed in playable area
-    if (placingTank && !placingSuperTank && !placingAirSupport){
-        tank.draw(mousePos.x, mousePos.y);
-        if (input.wasReleased(MouseButtons.LEFT) && !topPanel.getBoundingBox().intersects(mousePos)
-                && !botPanel.getBoundingBox().intersects(mousePos)) {
-            towers.add(new Tank(mousePos, TANK));
-            placingTank = false;
+        // When hovered and clicked, an Image of the tower is drawn where mouse position is
+        if (tank.getBoundingBoxAt(tankPos).intersects(mousePos) && input.isDown(MouseButtons.LEFT)
+                && !placingSuperTank && !placingAirSupport && !(money < Tank.getCost())) {
+            placingTank = true;
+        } else if (superTank.getBoundingBoxAt(superTankPos).intersects(mousePos) && input.isDown(MouseButtons.LEFT)
+                && !placingTank && !placingAirSupport && !(money < SuperTank.getCost())) {
+            placingSuperTank = true;
+        } else if (airSupport.getBoundingBoxAt(airSupportPos).intersects(mousePos) && input.isDown(MouseButtons.LEFT)
+                && !placingTank && !placingSuperTank && !(money < Airplane.getCost())) {
+            placingAirSupport = true;
         }
-    } else if (placingSuperTank && !placingTank && !placingAirSupport){
-        superTank.draw(mousePos.x, mousePos.y);
-        if (input.wasReleased(MouseButtons.LEFT) && !topPanel.getBoundingBox().intersects(mousePos)
-                && !botPanel.getBoundingBox().intersects(mousePos)) {
-            towers.add(new SuperTank(mousePos, SUPERTANK));
-            placingSuperTank = false;
+
+        // Player cant hover multiple towers are picked up for placement at the same time
+        // and doesn't allow for tower to be placed on the Panels and are placed in playable area
+        if (placingTank && !placingSuperTank && !placingAirSupport) {
+            tank.draw(mousePos.x, mousePos.y);
+            if (input.wasReleased(MouseButtons.LEFT) && !topPanel.getBoundingBox().intersects(mousePos)
+                    && !botPanel.getBoundingBox().intersects(mousePos)) {
+                towers.add(new Tank(mousePos, TANK));
+                placingTank = false;
+                money -= Tank.getCost();
+            }
+        } else if (placingSuperTank && !placingTank && !placingAirSupport) {
+            superTank.draw(mousePos.x, mousePos.y);
+            if (input.wasReleased(MouseButtons.LEFT) && !topPanel.getBoundingBox().intersects(mousePos)
+                    && !botPanel.getBoundingBox().intersects(mousePos)) {
+                towers.add(new SuperTank(mousePos, SUPERTANK));
+                placingSuperTank = false;
+                money -= SuperTank.getCost();
+            }
+        } else if (placingAirSupport && !placingTank && !placingSuperTank) {
+            airSupport.draw(mousePos.x, mousePos.y);
+            if (input.wasReleased(MouseButtons.LEFT) && !topPanel.getBoundingBox().intersects(mousePos)
+                    && !botPanel.getBoundingBox().intersects(mousePos)) {
+                towers.add(new Airplane(mousePos, AIRSUPPORT));
+                placingAirSupport = false;
+                money -= Airplane.getCost();
+            }
         }
-        }
-    // Updates towers
+        // Updates towers
         for (int i = towers.size() - 1; i >= 0; i--) {
             Sprite t = towers.get(i);
             t.update(input);
-            }
         }
-
     }
+}
+

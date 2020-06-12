@@ -138,8 +138,8 @@ public class ShadowDefend extends AbstractGame {
     }
         //System.out.println("Wave: " + waveNumber);
         //System.out.println("Spawn delay: " + spawnDelay);
-        //        System.out.println("Max slicers: " + maxSlicers);
-        //        System.out.println("Spawn Delay: " + spawnDelay);
+        //System.out.println("Max slicers: " + maxSlicers);
+        //System.out.println("Spawn Delay: " + spawnDelay);
 
 
         // Draw map from the top left of the window

@@ -18,6 +18,8 @@ public class Tank extends Tower {
     private boolean shooting;
     private final Image image;
 
+    public static double getCost() {return COST;}
+
     public Tank(Point location, String filename){
         super(location, IMAGE_FILE);
         this.image = new Image(IMAGE_FILE);

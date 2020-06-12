@@ -17,6 +17,8 @@ public class SuperTank extends Tower {
     private boolean shooting;
     private final Image image;
 
+    public static double getCost() {return COST;}
+
     public SuperTank(Point location, String filename) {
         super(location, IMAGE_FILE);
         this.image = new Image(IMAGE_FILE);
