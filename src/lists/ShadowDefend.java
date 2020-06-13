@@ -53,8 +53,6 @@ public class ShadowDefend extends AbstractGame {
         this.spawnedSlicers = 0;
         waveStarted = false;
         this.frameCount = Integer.MAX_VALUE;
-        // Temporary fix for the weird slicer map glitch (might have to do with caching textures)
-        // This fix is entirely optional
         new Slicer(polyline);
         this.WAVES = LoadLevel.makeFormat();
     }
@@ -145,7 +143,6 @@ public class ShadowDefend extends AbstractGame {
         // Draw map from the top left of the window
         map.draw(0, 0, 0, 0, WIDTH, HEIGHT);
 
-
         // Handle key presses
         if (input.wasPressed(Keys.S)) {
             waveStarted = true;
@@ -210,10 +207,10 @@ public class ShadowDefend extends AbstractGame {
         }
         panel.update(input);
 
-
-        /*if (panel.getLives() <= 0) {
+        // closes window if lives are 0. Disable to see wave logic.
+        if (panel.getLives() <= 0) {
             Window.close();
-        }*/
+        }
 
 
     }
